@@ -10,7 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var db *gorm.DB
+var DB *gorm.DB
 
 func SetupMySQL(){
 	
@@ -18,11 +18,11 @@ func SetupMySQL(){
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s?charset=utf8&parseTime=True&loc=Local",
 		GetEnv("DB_USER", "root"), GetEnv("DB_PASS", ""), GetEnv("DB_HOST", "127.0.0.1"), GetEnv("DB_NAME", "ewallet_ums"))
 
-	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 	logrus.Info("database connected")
-	db.AutoMigrate(&models.User{}, &models.UserSession{})
+	DB.AutoMigrate(&models.User{}, &models.UserSession{})
 
 }
