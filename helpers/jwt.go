@@ -9,8 +9,10 @@ import (
 )
 
 type ClaimToken struct { 
+	UserID   int    `json:"user_id"`
 	Username string `json:"username"`
-	FullName string `json:"full_name"`
+	Fullname string `json:"full_name"`
+	Email    string `json:"email"`
 	jwt.RegisteredClaims
 }
 
@@ -25,7 +27,7 @@ func GenerateToken(ctx context.Context, userID int, username string, fullName st
 
 	claimToken := ClaimToken{ 
 		Username: username,
-		FullName: fullName,
+		Fullname: fullName,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer: GetEnv("APP_NAME",""),
 			IssuedAt: jwt.NewNumericDate(now),
