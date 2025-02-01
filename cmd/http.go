@@ -3,6 +3,7 @@ package cmd
 import (
 	"ewallet-ums/helpers"
 	"ewallet-ums/internal/api"
+	"ewallet-ums/internal/interfaces"
 	"ewallet-ums/internal/repository"
 	"ewallet-ums/internal/services"
 	"log"
@@ -11,14 +12,15 @@ import (
 )
 
 func ServerHTTP() {
-	dependency := depencyInjection()
+	dependency := dependencyInject()
 
 	r := gin.Default()
-	r.GET("/health", dependency.HealtCheckAPI.HealthCheckHandlerHTTP)
+	r.GET("/health", dependency.HealthcheckAPI.HealthcheckHandlerHTTP)
 
 	userV1 := r.Group("/user/v1")
 	userV1.POST("/register", dependency.RegisterAPI.Register)
 	userV1.POST("/login", dependency.LoginAPI.Login)
+	userV1.DELETE("/logout", dependency.MiddlewareValidateAuth, dependency.LogoutAPI.Logout)
 
 	err := r.Run(":" + helpers.GetEnv("PORT","8083"))
 	if err != nil {
@@ -27,15 +29,16 @@ func ServerHTTP() {
 }
 
 type Dependency struct { 
-	HealtCheckAPI *api.Healthcheck
-	RegisterAPI *api.RegisterHandler
-	LoginAPI *api.LoginHandler
+	UserRepository interfaces.IUserRepository
+	HealthcheckAPI interfaces.IHealthcheckHandler
+	RegisterAPI interfaces.IRegisterHandler
+	LoginAPI interfaces.ILoginHandler
+	LogoutAPI interfaces.ILogoutHandler
 }
 
-func depencyInjection() Dependency {
-	healtcheckSvc := &services.Healthcheck{
-	}
-	healtcheckAPI := &api.Healthcheck{
+func dependencyInject() Dependency {
+	healtcheckSvc := &services.Healthcheck{}
+	healthcheckAPI := &api.Healthcheck{
 		HealthcheckServices: healtcheckSvc,
 	}
 
@@ -55,9 +58,19 @@ func depencyInjection() Dependency {
 		LoginService: loginSvc,
 	}
 
+	logoutSvc := &services.LogoutService{
+		UserRepo: userRepo,
+	}
+	logoutAPI := &api.LogoutHandler{
+		LogoutService: logoutSvc,
+	}
+
 	return Dependency{
-		HealtCheckAPI: healtcheckAPI,
+		UserRepository: userRepo,
+		HealthcheckAPI: healthcheckAPI,
 		RegisterAPI: registerAPI,
 		LoginAPI: loginAPI,
+		LogoutAPI: logoutAPI,
 	}
 }
+
