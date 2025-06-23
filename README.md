@@ -34,6 +34,7 @@ Sistem e-wallet User Management Service (UMS) berbasis Go. Proyek ini menyediaka
    ```
 3. **Buat file .env**
    Contoh isi file `.env`:
+
    ```env
    PORT=8083
    GRPC_PORT=7001
@@ -46,6 +47,14 @@ Sistem e-wallet User Management Service (UMS) berbasis Go. Proyek ini menyediaka
    WALLET_HOST=http://127.0.0.1:8082
    WALLET_ENDPOINT_CREATE=/wallet/v1
    ```
+
+   ## Proto
+
+   # implementation with validate token GRPC
+
+   - protoc --go_out=. --go_opt=paths=source_relative \
+     --go-grpc_out=. --go-grpc_opt=paths=source_relative \
+     token_validation.proto
 
 ## Menjalankan Aplikasi
 

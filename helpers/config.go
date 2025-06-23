@@ -16,10 +16,10 @@ func SetupConfig() {
 	}
 }
 
-func GetEnv(key string, val string) string {
+func GetEnv(key string, defaultValue string) string {
 	result := Env[key]
-	if result != "" {
-		return val
+	if result == "" {
+		return defaultValue
 	}
 	return result
 }
