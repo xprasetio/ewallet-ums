@@ -26,7 +26,7 @@ func ServerHTTP() {
 	userV1WithAuth.DELETE("/logout", dependency.MiddlewareValidateAuth, dependency.LogoutAPI.Logout)
 	userV1WithAuth.PUT("/refresh-token", dependency.MiddlewareRefreshToken, dependency.RefreshTokenAPI.RefreshToken)
 
-	err := r.Run(":" + helpers.GetEnv("PORT","8083"))
+	err := r.Run(":" + helpers.GetEnv("PORT","8081"))
 	if err != nil {
 		log.Fatal(err.Error())
 	}

@@ -8,29 +8,29 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-type ClaimToken struct { 
+type ClaimToken struct {
 	UserID   int    `json:"user_id"`
 	Username string `json:"username"`
 	Fullname string `json:"full_name"`
-	Email    string `json:"email"`
 	jwt.RegisteredClaims
 }
 
 var MapTypeToken = map[string]time.Duration{
-	"token":        time.Hour * 3,
+	"token":         time.Hour * 3,
 	"refresh_token": time.Hour * 72,
 }
 
-var jwtSecret = []byte(GetEnv("APP_SECRET",""))
+var jwtSecret = []byte(GetEnv("APP_SECRET", ""))
 
 func GenerateToken(ctx context.Context, userID int, username string, fullName string, tokenType string, now time.Time) (string, error) {
 
-	claimToken := ClaimToken{ 
+	claimToken := ClaimToken{
+		UserID:   userID,
 		Username: username,
 		Fullname: fullName,
 		RegisteredClaims: jwt.RegisteredClaims{
-			Issuer: GetEnv("APP_NAME",""),
-			IssuedAt: jwt.NewNumericDate(now),
+			Issuer:    GetEnv("APP_NAME", ""),
+			IssuedAt:  jwt.NewNumericDate(now),
 			ExpiresAt: jwt.NewNumericDate(now.Add(MapTypeToken[tokenType])),
 		},
 	}
@@ -43,13 +43,13 @@ func GenerateToken(ctx context.Context, userID int, username string, fullName st
 	}
 	return resultToken, nil
 }
-func ValidateToken(ctx context.Context, token string) (*ClaimToken, error) { 
+func ValidateToken(ctx context.Context, token string) (*ClaimToken, error) {
 	var (
 		claimToken *ClaimToken
-		ok bool
+		ok         bool
 	)
-	jwtToken, err := jwt.ParseWithClaims(token, &ClaimToken{}, func(t *jwt.Token) (interface{}, error) { 
-		if _, ok:= t.Method.(*jwt.SigningMethodHMAC); !ok { 
+	jwtToken, err := jwt.ParseWithClaims(token, &ClaimToken{}, func(t *jwt.Token) (interface{}, error) {
+		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
 		}
 		return jwtSecret, nil
