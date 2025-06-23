@@ -27,7 +27,7 @@ func (e *External) CreateWallet(ctx context.Context, userID int) (*Wallet, error
 		return nil, errors.Wrap(err, "failed to marhsal json")
 	}
 
-	url := helpers.GetEnv("WALLET_HOST", "http://127.0.0.1:8081") + helpers.GetEnv("WALLET_ENDPOINT_CREATE", "/wallet/v1")
+	url := helpers.GetEnv("WALLET_HOST", "http://127.0.0.1:8082") + helpers.GetEnv("WALLET_ENDPOINT_CREATE", "/wallet/v1")
 
 	httpReq, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(payload))
 	if err != nil {

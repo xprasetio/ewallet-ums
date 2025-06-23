@@ -37,7 +37,7 @@ Sistem e-wallet User Management Service (UMS) berbasis Go. Proyek ini menyediaka
 
    ```env
    PORT=8083
-   GRPC_PORT=7001
+   GRPC_PORT=7000
    DB_USER=root
    DB_PASS=yourpassword
    DB_HOST=127.0.0.1

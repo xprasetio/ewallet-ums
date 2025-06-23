@@ -33,6 +33,7 @@ func (s *RegisterService) Register(ctx context.Context, request models.User) (in
 	// s.External.SendNotification(ctx, request.Email, "register", map[string]string{
 	// 	"full_name": request.FullName,
 	// })
+	
 
 	resp := request
 	resp.Password = ""
